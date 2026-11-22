@@ -1,68 +1,199 @@
-# Blood Cell Detection — Streamlit
+# 🩸 Blood Cell Detection Using YOLO
 
-A simple web app for running your trained YOLO11 blood-cell detector on uploaded microscopy images.
+A computer vision project that detects and identifies **Red Blood Cells (RBCs), White Blood Cells (WBCs), and Platelets** in microscopy images using a trained YOLO object detection model. The project uses Roboflow for dataset preparation and Streamlit to provide an interactive web application for image-based detection.
 
-## 1. Add your trained weights
+## 📌 Project Overview
 
-Your notebook's training output reports these files:
+Blood cell detection is an object detection task in which a computer vision model identifies blood cells and locates them using bounding boxes.
 
-- `/content/runs/detect/train/weights/best.pt` — recommended checkpoint
-- `/content/runs/detect/train/weights/last.pt` — final epoch checkpoint
+In this project, I trained a YOLO model using a dataset of **364 images prepared using Roboflow** and developed a Streamlit application to make predictions on uploaded microscopy images.
 
-In Google Colab, download `best.pt` from the Files panel, or run:
+### Key Features
+
+- Detects RBCs, WBCs, and Platelets.
+- Uses a custom-trained YOLO object detection model.
+- Uses Roboflow for dataset preparation and annotation workflow.
+- Provides an interactive Streamlit web interface.
+- Allows users to upload microscopy images.
+- Displays annotated images with predicted bounding boxes and confidence scores.
+- Provides configurable confidence and IoU thresholds.
+- Displays detected cell counts and allows users to download annotated results.
+
+## 🛠️ Technologies Used
+
+| Technology | Purpose |
+|---|---|
+| Python | Core programming language |
+| YOLO (Ultralytics) | Object detection |
+| Roboflow | Dataset preparation and annotation |
+| Streamlit | Web application |
+| OpenCV | Image processing |
+| Pillow | Image handling |
+| Pandas | Tabular results and detection counts |
+
+## 📂 Dataset
+
+- **Dataset size:** 364 images
+- **Dataset preparation:** Roboflow
+- **Task:** Object detection in blood microscopy images
+- **Target classes:** RBC, WBC, and Platelets
+
+The images and annotations were prepared for training an object detection model. The model learns to locate blood cells and classify them into the corresponding categories.
+
+*Note: The dataset size refers to the images used for training as reported for this project. The exact train, validation, and test split should be documented separately if applicable.*
+
+## 🧠 Model Training
+
+The project uses a YOLO object detection model trained on the prepared blood cell dataset.
+
+The training workflow includes:
+
+1. Preparing and annotating microscopy images using Roboflow.
+2. Exporting the dataset in a YOLO-compatible format.
+3. Training the YOLO model on the dataset.
+4. Evaluating model performance using object detection metrics.
+5. Saving the trained weights as `best.pt`.
+6. Loading the trained model into the Streamlit application for inference.
+
+### Evaluation Metrics
+
+The following validation results were reported for the trained model:
+
+| Metric | Score |
+|---|---:|
+| Precision | 83.9% |
+| Recall | 92.8% |
+| mAP@50 | 92.9% |
+| mAP@50–95 | 65.8% |
+
+These results indicate the model's reported performance on its validation dataset. Performance may vary on images from different microscopes, laboratories, or imaging conditions.
+
+## 🖥️ Application Preview
+
+The Streamlit application allows users to upload a microscopy image and view the model's predictions.
+
+The application provides:
+
+- Image upload
+- Detection confidence configuration
+- IoU threshold configuration
+- Annotated image output
+- Detected cell counts
+- Downloadable annotated images
+
+## 📁 Project Structure
+
+```text
+blood_cell_streamlit_app/
+│
+├── app.py
+├── requirements.txt
+├── README.md
+└── best.pt
+```
+
+**Important:** The trained model weights file is required to run the application. It is not included automatically when you install the Python dependencies.
+
+## ⚙️ Installation and Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/YOUR_USERNAME/blood-cell-detection.git
+```
+
+Navigate into the project directory:
+
+```bash
+cd blood-cell-detection
+```
+
+Replace `YOUR_USERNAME` and the repository name with your actual GitHub details.
+
+### 2. Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+Activate it on Windows PowerShell:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+### 4. Add the trained model
+
+Copy your trained model weights into the project directory.
+
+The application must reference the exact model filename. For example, if your file is named `best (1).pt`, update the model path in `app.py` accordingly.
 
 ```python
-from google.colab import files
-files.download("/content/runs/detect/train/weights/best.pt")
+from pathlib import Path
+
+MODEL_PATH = Path("best (1).pt")
 ```
 
-Copy `best.pt` into this project folder beside `app.py`. The weights file is not included in this starter ZIP because it was not attached with the notebook.
+Alternatively, rename the file to `best.pt` and set the model path to `Path("best.pt")`.
 
-## 2. Run locally on Windows
+### 5. Run the Streamlit application
 
-Open PowerShell in this folder and run:
-
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-streamlit run app.py
+```bash
+python -m streamlit run app.py
 ```
 
-If PowerShell blocks activation, use:
+Open the local URL displayed in the terminal, usually:
 
-```powershell
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m streamlit run app.py
+```text
+http://localhost:8501
 ```
 
-The browser should open the app, usually at `http://localhost:8501`.
+Upload a microscopy image to view the model's predictions.
 
-## 3. Deploy to Streamlit Community Cloud
+## 📊 Applications
 
-1. Create a GitHub repository for this project.
-2. Upload `app.py`, `requirements.txt`, and `best.pt`.
-3. Open https://share.streamlit.io/ and create an app from that repository.
-4. Choose `app.py` as the main file and deploy.
+Potential applications of blood cell object detection include:
 
-**Important:** model weights may be several MB and can make a repository large. Do not commit API keys or other secrets. If your weights are too large for GitHub, use an appropriate model-artifact host and download them securely at startup.
+- Educational demonstrations of computer vision.
+- Research experiments involving microscopy images.
+- Automated image analysis prototypes.
+- Exploring object detection in biomedical image datasets.
 
-## 4. Model improvement plan
+## ⚠️ Limitations and Disclaimer
 
-The notebook reports validation metrics for YOLO11n after 100 epochs: Precision 0.839, Recall 0.928, mAP50 0.929, and mAP50-95 0.658 on 73 validation images / 967 instances.
+- The model was trained using a limited dataset of 364 images, so its ability to generalize to unseen data may be limited.
+- Detection accuracy depends on image quality, cell appearance, annotation quality, and the distribution of the training data.
+- The reported metrics are validation results and do not establish clinical reliability.
+- This project is intended for educational and research purposes only. It is **not a medical diagnostic system** and must not be used to make clinical decisions.
 
-Before changing the model, establish a held-out test baseline. Then compare one change at a time:
+## 🚀 Future Improvements
 
-- Inspect confusion matrix, PR curves, and per-class metrics.
-- Try image sizes 640 vs 800/960.
-- Compare YOLO11n with YOLO11s if GPU memory allows.
-- Test confidence/IoU thresholds on validation data.
-- Check annotations and add diverse, correctly labelled training data.
-- Keep the test set untouched until final comparison.
+- Expand the dataset with more diverse and accurately annotated images.
+- Compare different YOLO model sizes and training configurations.
+- Evaluate performance separately for each blood cell class.
+- Analyze false positives and false negatives using a confusion matrix.
+- Test generalization on an independent dataset.
+- Deploy the application using a suitable cloud hosting platform.
 
-Higher image size or a larger model can improve results but may increase latency and memory use. Verify gains empirically.
+## 👨‍💻 Author
 
-## Intended use
+**Mehdi Ali**
 
-This app is for education and research demonstrations only. It is not a validated medical device and must not be used to diagnose patients or guide treatment.
+Developed as a computer vision project exploring YOLO-based object detection and interactive deployment with Streamlit.
+
+## ⭐ Acknowledgements
+
+- [Ultralytics YOLO](https://docs.ultralytics.com/)
+- [Roboflow](https://roboflow.com/)
+- [Streamlit](https://streamlit.io/)
+
+---
+
+If you find this project useful, consider giving the repository a ⭐ on GitHub.
